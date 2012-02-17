@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block xhead %}
+<style type="text/css">
+    body { padding-top: 20px; }
+</style>
+{% endblock %}
+
+{% block content %}
+<a href="{% url tablr.views.home %}">&laquo; Home</a>
+<div id="post" class="well">
+    <h3>
+        <a href="http://www.reddit.com{{ post.permalink }}">{{ post.title }}</a>
+        <small>- <a href="http://www.reddit.com/user/{{ post.author }}">{{ post.author }}</a></small>
+    </h3>
+    <p>{{ post.selftext|linebreaks }}</p>
+</div>
+
+<div id="responses">
+    {% for q, a in responses %}
+    <div class="response">
+        <p><strong><a href="http://www.reddit.com{{ post.permalink }}{{ q.id }}">{{ q.body }}</a></strong> - <a href="http://www.reddit.com/user/{{ q.author }}">{{ q.author }}</a><br/>
+           {{ a.body }}</p>
+    </div>
+    {% empty %}
+    <div class="response">
+        <p>{{ post.author }} has not responded to any top-level questions in this AMA.</p>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="bbcode">
+    <input type="text" value="Question | Answer
+    :-- | :--
+    {% for q, a in responses %}
+    {{ q.body }} | {{ a.body }}
+    {% endfor %}"/>
+</div>
+{% endblock %}

@@ -56,5 +56,5 @@ def render_qa(request, id):
             if _acc(r, ['data', 'author']) == author:
                 responses.append((q['data'], r['data']))
                 break
-    
+
     return render(request, 'tablr/render.html', locals())

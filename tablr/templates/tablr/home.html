@@ -5,6 +5,11 @@
 {% block xhead %}
 <style type="text/css">
     body { padding-top: 20px; }
+    .row { margin-top: 20px; }
+    footer { 
+        border-top: 1px solid #e5e5e5; 
+        padding-top: 20px;
+    }
 </style>
 {% endblock %}
 
@@ -12,39 +17,44 @@
 <div>
     <h1>IAmA Table Generator</h1>
     <p>Inspired by the fine work done by <a href="http://www.reddit.com/user/Helpful_Table_Maker">Helpful_Table_Maker</a> and the <a href="http://www.reddit.com/r/tabled">r/tabled</a> community, this page parses AMAs into an easy-to-read Q&A format.</p>
-    <p>If you have any questions, comments or improvements, your input is welcome on the Github issues tracker (link to follow).</p>
 </div>
 
-<div>
-    <form action="" method="POST" class="form-horizontal">
-        {% csrf_token %}
-        {% if error %}
-        <div class="alert alert-block alert-error">
-            <a href="#" class="close">x</a>
-            <h4 class="alert-heading">Invalid url ({{ url }})</h4>
-            <p>Please input a page like "http://www.reddit.com/r/tabled/comments/fwpzj/" or "fwpzj"</p>
-        </div>
-        {% endif %}
-        
-        <fieldset>
-            <div class="control-group">
-                <label class="control-label" for="page">Link to AMA:</label>
-                <div class="controls">
-                    <input type="text" name="page"/>
-                    <p class="help-block">Input a (reasonable) fragment of the url containing the id (like "fwpzj")</p>
-                </div>
+<div class="row">
+    <div class="span5">
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% if error %}
+            <div class="alert alert-block alert-error">
+                <a href="#" class="close">x</a>
+                <h4 class="alert-heading">Invalid url ({{ url }})</h4>
+                <p>Please input a page like "http://www.reddit.com/r/tabled/comments/fwpzj/" or "fwpzj"</p>
             </div>
+            {% endif %}
             
-            <p>or try an AMA from <a href="http://www.reddit.com/r/IAmA">the current AMA frontpage</a>:
-                <ul>
-                    {% for ama in amas %}
-                    <li><a href="{{ ama.id }}">{{ ama.title }}</a> - {{ ama.author }}</li>
-                    {% empty %}
-                    <li>Seriously? Everything on the frontpage appears to be an AMA request.</li>
-                    {% endfor %}
-                </ul>
-            </p>
-        </fieldset>
-    </form>
+            <h3>Find by URL</h3>
+            <p>Input the URL or id fragment (like "fwpzj") that you'd like to view:</p>
+            <input type="text" name="page"/>
+            <div class="actions">
+                <input type="submit" class="btn primary" value="Tabulate"/>
+            </div>
+        </form>
+    </div>
+          
+    <div class="span6">  
+        <h3>View Recent</h3>
+        <p>Check out an AMA from <a href="http://www.reddit.com/r/IAmA">the current AMA frontpage</a>:
+            <ul>
+                {% for ama in amas %}
+                <li><a href="{{ ama.id }}">{{ ama.title }}</a> - {{ ama.author }}</li>
+                {% empty %}
+                <li>Seriously? Everything on the frontpage appears to be an AMA request.</li>
+                {% endfor %}
+            </ul>
+        </p>
+    </div>
 </div>
+
+<footer class="footer">
+    <p>Questions, comments and suggestions welcome on the <a href="https://github.com/jamesdabbs/django-tablr">github</a> issue tracker.</p>
+</footer>
 {% endblock %}

@@ -1,10 +1,16 @@
 {% extends "base.html" %}
+{% load tablr %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
 {% block xhead %}
 <style type="text/css">
     body { padding-top: 20px; }
+    blockquote { border: none; }
+    blockquote p { 
+        font-size: 13px;
+        line-height: 18px;
+    }
 </style>
 {% endblock %}
 
@@ -15,27 +21,44 @@
         <a href="http://www.reddit.com{{ post.permalink }}">{{ post.title }}</a>
         <small>- <a href="http://www.reddit.com/user/{{ post.author }}">{{ post.author }}</a></small>
     </h3>
-    <p>{{ post.selftext|linebreaks }}</p>
+    {{ post.selftext_html|parse }}
 </div>
 
 <div id="responses">
-    {% for q, a in responses %}
-    <div class="response">
-        <p><strong><a href="http://www.reddit.com{{ post.permalink }}{{ q.id }}">{{ q.body }}</a></strong> - <a href="http://www.reddit.com/user/{{ q.author }}">{{ q.author }}</a><br/>
-           {{ a.body }}</p>
-    </div>
-    {% empty %}
-    <div class="response">
-        <p>{{ post.author }} has not responded to any top-level questions in this AMA.</p>
-    </div>
-    {% endfor %}
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Comment</th>
+                <th>Response</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for q, a in responses %}
+            <tr>
+                <td>
+                    <blockquote>
+                        <p>{{ q.body_html|parse }}</p>
+                        <small><a href="http://www.reddit.com/user/{{ q.author }}">{{ q.author }}</a> (<a href="http://www.reddit.com{{ post.permalink }}{{ q.id }}">thread</a>)</small>
+                    </blockquote>
+                </td>
+                <td>{{ a.body_html|parse }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="2">{{ post.author }} has not responded to any top-level questions in this AMA.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 
-<div id="bbcode">
-    <input type="text" value="Question | Answer
-    :-- | :--
-    {% for q, a in responses %}
-    {{ q.body }} | {{ a.body }}
-    {% endfor %}"/>
+<div id="bbcode" class="well">
+    <h3>Pre-formatted Table</h3>
+    <p>The following table *should* be suitable for copying and pasting into a reddit comment, but please check the results manually. (Ctrl-a + ctrl-c to copy)</p>
+    <textarea>Comment | Response
+:-- | :--
+{% for q, a in responses %}{{ q.body|condense }} | {{ a.body|condense }}
+{% endfor %}
+    </textarea>
 </div>
 {% endblock %}

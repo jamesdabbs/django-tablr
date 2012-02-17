@@ -19,7 +19,7 @@ setup(
     provides = ['tablr'],
     description='A simple app for formatting reddit AMAs.',
     url='http://github.com/jamesdabbs/tablr',
-    packages=['tablr'],
+    packages=['tablr', 'tablr.templatetags'],
     package_dir={'tablr': 'tablr'},
     package_data={'tablr': ['templates/tablr/*.html']},
     classifiers  = [
